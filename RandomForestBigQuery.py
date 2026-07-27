@@ -165,8 +165,3 @@ def generate_daily_predictions():
         
     except Exception as e:
         print(f"\n⚠️ Nota: No se pudieron generar las predicciones diarias: {e}\n")
-
-
-if __name__ == "__main__":
-
- generate_daily_predictions()
