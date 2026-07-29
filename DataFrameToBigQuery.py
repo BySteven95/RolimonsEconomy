@@ -1,6 +1,7 @@
 from google.cloud import bigquery
 from google.oauth2 import service_account
 import pandas as pd
+import os, sys
 
 # 1. Configurar Credenciales y Cliente de BigQuery
 PROJECT_ID = "robloxtradinginfo" 
@@ -8,7 +9,15 @@ DATASET_ID = "rolimons_data"
 TABLE_ID = "history"
 TABLE_REF = f"{PROJECT_ID}.{DATASET_ID}.{TABLE_ID}"
 
-creds = service_account.Credentials.from_service_account_file("credentials.json")
+def resourcePath(relative_path):
+        # Devuelve la ruta absoluta a un recurso, compatible con PyInstaller.
+        try:
+            base_path = sys._MEIPASS
+        except Exception:
+            base_path = os.path.abspath(".")
+        return os.path.join(base_path, relative_path)
+
+creds = service_account.Credentials.from_service_account_file(resourcePath("credentials.json"))
 client = bigquery.Client(credentials=creds, project=PROJECT_ID)
 
 # 2. Definir el Esquema de la Tabla 
@@ -26,6 +35,8 @@ SCHEMA = [
   bigquery.SchemaField("hyped", "BOOLEAN"),
   bigquery.SchemaField("rare", "BOOLEAN"),
 ]
+
+    
 
 def init_bigquery_table():
   """Crea la tabla si no existe, asegurando la estructura correcta."""

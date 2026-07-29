@@ -1,15 +1,22 @@
-from datetime import datetime, timezone
 from google.cloud import bigquery
 from google.oauth2 import service_account
-import pandas as pd
-
+import os, sys
 # ==========================================
 # CONFIGURACIÓN DE BIGQUERY
 # ==========================================
 PROJECT_ID = "robloxtradinginfo" 
 DATASET_ID = "rolimons_data"
 
-creds = service_account.Credentials.from_service_account_file("credentials.json")
+
+def resourcePath(relative_path):
+        # Devuelve la ruta absoluta a un recurso, compatible con PyInstaller.
+        try:
+            base_path = sys._MEIPASS
+        except Exception:
+            base_path = os.path.abspath(".")
+        return os.path.join(base_path, relative_path)
+
+creds = service_account.Credentials.from_service_account_file(resourcePath("credentials.json"))
 client = bigquery.Client(credentials=creds, project=PROJECT_ID)
 
 # Mapeo oficial de Rolimons para la columna Demand
